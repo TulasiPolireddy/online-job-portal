@@ -10,85 +10,106 @@
 </head>
 <body data-theme="light">
 
-  <!-- ================= NAVBAR ================= -->
-  <header class="navbar">
-    <div class="nav-brand">
-      <i class="fa-solid fa-briefcase brand-icon"></i>
-      <span class="brand-name">Work<span>Sphere</span></span>
-    </div>
-
-    <!-- Global Search -->
-    <div class="global-search-container">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      <input type="text" id="globalSearchInput" placeholder="Search jobs, skills, companies..." />
-    </div>
-
-    <div class="nav-actions">
-      <!-- Role Switcher -->
-      <div class="role-selector">
-        <label for="roleSwitch"><i class="fa-solid fa-user-gear"></i> Role:</label>
-        <select id="roleSwitch">
-          <option value="seeker">Job Seeker</option>
-          <option value="recruiter">Recruiter</option>
-          <option value="admin">Admin Portal</option>
-        </select>
+  <!-- ================= AUTHENTICATION / LOGIN SCREEN ================= -->
+  <div class="auth-wrapper" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="fa-solid fa-briefcase brand-icon fa-2x" style="color: var(--primary);"></i>
+        <h2>Welcome to WorkSphere</h2>
+        <p>Login to your account to continue</p>
+      </div>
+      
+      <!-- Role Selection Tabs -->
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="seeker">Job Seeker</button>
+        <button class="role-tab" data-role="recruiter">Recruiter</button>
+        <button class="role-tab" data-role="admin">Admin</button>
       </div>
 
-      <!-- Theme Toggle -->
-      <button class="icon-btn" id="themeToggle" title="Toggle Dark/Light Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label>Email or Username</label>
+          <input type="text" id="loginEmail" required placeholder="e.g. user@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required placeholder="Enter any password to test" />
+        </div>
+        <button type="submit" class="btn btn-primary full-width auth-btn">Login to Dashboard</button>
+      </form>
+    </div>
+  </div>
 
-      <!-- Notifications -->
-      <div class="notification-wrapper">
-        <button class="icon-btn" id="notifBtn" title="Notifications">
-          <i class="fa-solid fa-bell"></i>
-          <span class="badge" id="notifBadge">3</span>
+  <!-- ================= MAIN APP SCREEN (Hidden by default) ================= -->
+  <div id="mainAppScreen" class="hidden">
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <i class="fa-solid fa-briefcase brand-icon"></i>
+        <span class="brand-name">Work<span>Sphere</span></span>
+      </div>
+
+      <!-- Global Search -->
+      <div class="global-search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="globalSearchInput" placeholder="Search jobs, skills, companies..." />
+      </div>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle -->
+        <button class="icon-btn" id="themeToggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
         </button>
-        <div class="notification-dropdown" id="notifDropdown">
-          <div class="dropdown-header">
-            <h4>Notifications</h4>
-            <button class="text-btn" id="markAllRead">Mark all read</button>
+
+        <!-- Notifications -->
+        <div class="notification-wrapper">
+          <button class="icon-btn" id="notifBtn" title="Notifications">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge" id="notifBadge">3</span>
+          </button>
+          <div class="notification-dropdown" id="notifDropdown">
+            <div class="dropdown-header">
+              <h4>Notifications</h4>
+              <button class="text-btn" id="markAllRead">Mark all read</button>
+            </div>
+            <ul class="notif-list" id="notifList">
+              <!-- Dynamic Notifications -->
+            </ul>
           </div>
-          <ul class="notif-list" id="notifList">
-            <!-- Dynamic Notifications -->
-          </ul>
+        </div>
+
+        <!-- User Profile Menu (Photo Removed, Replaced with Icon) -->
+        <div class="user-badge" id="currentUserBadge">
+          <i class="fa-solid fa-circle-user fa-lg" style="color: var(--primary);"></i>
+          <span id="currentUserName">Alex Morgan</span>
         </div>
       </div>
+    </header>
 
-      <!-- User Profile Menu -->
-      <div class="user-badge" id="currentUserBadge">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" id="userAvatar" />
-        <span id="currentUserName">Alex Morgan</span>
-      </div>
+    <!-- MAIN LAYOUT -->
+    <div class="app-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <nav class="sidebar-nav" id="sidebarMenu">
+          <!-- Dynamically rendered based on active role -->
+        </nav>
+        <div class="sidebar-footer">
+          <button class="logout-btn" onclick="handleLogout()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Workspace -->
+      <main class="content-workspace" id="workspace">
+        <!-- Sections will be rendered or toggled via JS -->
+      </main>
     </div>
-  </header>
-
-  <!-- ================= MAIN LAYOUT ================= -->
-  <div class="app-layout">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <nav class="sidebar-nav" id="sidebarMenu">
-        <!-- Dynamically rendered based on active role -->
-      </nav>
-      <div class="sidebar-footer">
-        <button class="logout-btn" onclick="toast('Logged out successfully', 'info')">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content Workspace -->
-    <main class="content-workspace" id="workspace">
-      <!-- Sections will be rendered or toggled via JS -->
-    </main>
-
   </div>
 
   <!-- ================= MODALS ================= -->
 
-  <!-- 1. Apply for Job Modal -->
+  <!-- Apply Modal -->
   <div class="modal" id="applyModal">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -121,7 +142,7 @@
     </div>
   </div>
 
-  <!-- 2. Post / Edit Job Modal (Recruiter) -->
+  <!-- Post Job Modal -->
   <div class="modal" id="postJobModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-header">
@@ -169,16 +190,16 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Salary Range (Annual USD)</label>
+          <label>Salary Range</label>
           <input type="text" id="salaryInput" placeholder="e.g. $120,000 - $145,000" required />
         </div>
         <div class="form-group">
-          <label>Required Skills (comma separated)</label>
-          <input type="text" id="skillsInput" placeholder="React, TypeScript, CSS, GraphQL" required />
+          <label>Required Skills</label>
+          <input type="text" id="skillsInput" placeholder="React, TypeScript, CSS" required />
         </div>
         <div class="form-group full-width">
           <label>Job Description</label>
-          <textarea id="descriptionInput" rows="4" placeholder="Detail the day-to-day responsibilities, requirements, and benefits..." required></textarea>
+          <textarea id="descriptionInput" rows="4" placeholder="Detail the day-to-day responsibilities..." required></textarea>
         </div>
         <div class="modal-footer full-width">
           <button type="button" class="btn btn-outline" onclick="closeModal('postJobModal')">Cancel</button>
@@ -188,7 +209,7 @@
     </div>
   </div>
 
-  <!-- 3. Schedule Interview Modal -->
+  <!-- Schedule Modal -->
   <div class="modal" id="scheduleModal">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -206,46 +227,41 @@
           <input type="datetime-local" id="schedDateTime" required />
         </div>
         <div class="form-group">
-          <label>Interview Mode</label>
+          <label>Mode</label>
           <select id="schedMode">
-            <option value="Online">Online Video Call</option>
-            <option value="Offline">On-site In-Person</option>
-            <option value="Phone">Phone Screening</option>
+            <option value="Online">Online Call</option>
+            <option value="Offline">On-site</option>
           </select>
         </div>
         <div class="form-group">
           <label>Meeting Link / Location</label>
-          <input type="text" id="schedLink" placeholder="https://meet.google.com/xyz or Office Room 4A" required />
+          <input type="text" id="schedLink" placeholder="Link or Room Number" required />
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeModal('scheduleModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Confirm & Send Invitation</button>
+          <button type="submit" class="btn btn-primary">Send Invitation</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 4. Job Details View Modal -->
+  <!-- Job Details Modal -->
   <div class="modal" id="jobDetailModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-header">
         <h3 id="detailJobTitle">Position Title</h3>
         <button class="close-modal" onclick="closeModal('jobDetailModal')">&times;</button>
       </div>
-      <div class="modal-body" id="detailContent">
-        <!-- Injected dynamically -->
-      </div>
-      <div class="modal-footer" id="detailFooter">
-        <!-- Injected dynamic action buttons -->
-      </div>
+      <div class="modal-body" id="detailContent"></div>
+      <div class="modal-footer" id="detailFooter"></div>
     </div>
   </div>
 
-  <!-- 5. Report Job/Content Modal -->
+  <!-- Report Modal -->
   <div class="modal" id="reportModal">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3>Report Content / Job</h3>
+        <h3>Report Job</h3>
         <button class="close-modal" onclick="closeModal('reportModal')">&times;</button>
       </div>
       <form id="reportForm" class="modal-body">
@@ -253,15 +269,13 @@
         <div class="form-group">
           <label>Reason</label>
           <select id="reportReason">
-            <option value="Fraud or Scam">Fraud / Fake Recruiter</option>
-            <option value="Inappropriate Content">Inappropriate Content</option>
-            <option value="Expired or Misleading">Expired / Misleading Info</option>
-            <option value="Spam">Spam or Duplicate</option>
+            <option value="Fraud">Fraud</option>
+            <option value="Spam">Spam</option>
           </select>
         </div>
         <div class="form-group">
           <label>Details</label>
-          <textarea id="reportDetails" rows="4" placeholder="Explain the issue..." required></textarea>
+          <textarea id="reportDetails" rows="4" required></textarea>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeModal('reportModal')">Cancel</button>
