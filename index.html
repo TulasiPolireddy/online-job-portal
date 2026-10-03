@@ -10,39 +10,75 @@
 </head>
 <body data-theme="light">
 
-  <!-- ================= AUTHENTICATION / LOGIN SCREEN ================= -->
-  <div class="auth-wrapper" id="authScreen">
+  <!-- ================= AUTH / LOGIN VIEW ================= -->
+  <div id="authScreen" class="auth-wrapper">
     <div class="auth-card">
-      <div class="auth-header">
-        <i class="fa-solid fa-briefcase brand-icon fa-2x" style="color: var(--primary);"></i>
-        <h2>Welcome to WorkSphere</h2>
-        <p>Login to your account to continue</p>
+      <div class="auth-brand">
+        <i class="fa-solid fa-briefcase brand-icon"></i>
+        <h1>Work<span>Sphere</span></h1>
       </div>
-      
+      <p class="auth-subtitle">Sign in to access your portal workspace</p>
+
       <!-- Role Selection Tabs -->
-      <div class="role-tabs">
-        <button class="role-tab active" data-role="seeker">Job Seeker</button>
-        <button class="role-tab" data-role="recruiter">Recruiter</button>
-        <button class="role-tab" data-role="admin">Admin</button>
+      <div class="auth-role-tabs">
+        <button type="button" class="role-tab active" data-role="seeker" onclick="selectAuthRole('seeker')">
+          <i class="fa-solid fa-user"></i> Job Seeker
+        </button>
+        <button type="button" class="role-tab" data-role="recruiter" onclick="selectAuthRole('recruiter')">
+          <i class="fa-solid fa-building"></i> Recruiter
+        </button>
+        <button type="button" class="role-tab" data-role="admin" onclick="selectAuthRole('admin')">
+          <i class="fa-solid fa-shield-halved"></i> Admin
+        </button>
       </div>
 
       <form id="loginForm" class="auth-form">
+        <input type="hidden" id="loginRole" value="seeker" />
+        
         <div class="form-group">
-          <label>Email or Username</label>
-          <input type="text" id="loginEmail" required placeholder="e.g. user@example.com" />
+          <label id="loginEmailLabel">Email Address</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="loginEmail" required placeholder="user@worksphere.com" />
+          </div>
         </div>
+
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="loginPassword" required placeholder="Enter any password to test" />
+          <div class="input-with-icon">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="loginPassword" required placeholder="••••••••" />
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary full-width auth-btn">Login to Dashboard</button>
+
+        <div class="auth-extras">
+          <label class="remember-me">
+            <input type="checkbox" checked /> Remember session
+          </label>
+          <a href="javascript:void(0)" onclick="toast('Password reset link sent to your email', 'info')">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Portal
+        </button>
       </form>
+
+      <!-- Quick Demo Access Bar -->
+      <div class="demo-access-box">
+        <span>Quick Demo Login:</span>
+        <div class="demo-buttons">
+          <button type="button" class="btn-demo" onclick="quickLogin('seeker')">Seeker</button>
+          <button type="button" class="btn-demo" onclick="quickLogin('recruiter')">Recruiter</button>
+          <button type="button" class="btn-demo" onclick="quickLogin('admin')">Admin</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ================= MAIN APP SCREEN (Hidden by default) ================= -->
-  <div id="mainAppScreen" class="hidden">
-    <!-- NAVBAR -->
+  <!-- ================= MAIN APP WORKSPACE (PROTECTED) ================= -->
+  <div id="mainApp" class="main-app-container" style="display: none;">
+    
+    <!-- Navbar -->
     <header class="navbar">
       <div class="nav-brand">
         <i class="fa-solid fa-briefcase brand-icon"></i>
@@ -52,10 +88,15 @@
       <!-- Global Search -->
       <div class="global-search-container">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="globalSearchInput" placeholder="Search jobs, skills, companies..." />
+        <input type="text" id="globalSearchInput" placeholder="Search jobs, companies, skills..." />
       </div>
 
       <div class="nav-actions">
+        <!-- Live Role Badge -->
+        <div class="role-badge-pill" id="activeRoleBadge">
+          <i class="fa-solid fa-shield"></i> <span id="activeRoleText">Admin</span>
+        </div>
+
         <!-- Theme Toggle -->
         <button class="icon-btn" id="themeToggle" title="Toggle Dark/Light Mode">
           <i class="fa-solid fa-moon"></i>
@@ -72,44 +113,43 @@
               <h4>Notifications</h4>
               <button class="text-btn" id="markAllRead">Mark all read</button>
             </div>
-            <ul class="notif-list" id="notifList">
-              <!-- Dynamic Notifications -->
-            </ul>
+            <ul class="notif-list" id="notifList"></ul>
           </div>
         </div>
 
-        <!-- User Profile Menu (Photo Removed, Replaced with Icon) -->
+        <!-- User Identity Info -->
         <div class="user-badge" id="currentUserBadge">
-          <i class="fa-solid fa-circle-user fa-lg" style="color: var(--primary);"></i>
-          <span id="currentUserName">Alex Morgan</span>
+          <div class="user-avatar-icon"><i class="fa-solid fa-user"></i></div>
+          <span id="currentUserName">Administrator</span>
         </div>
+
+        <!-- Logout Action -->
+        <button class="btn btn-outline btn-sm logout-top-btn" onclick="handleLogout()" title="Log out from session">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
       </div>
     </header>
 
-    <!-- MAIN LAYOUT -->
+    <!-- App Layout -->
     <div class="app-layout">
       <!-- Sidebar Navigation -->
       <aside class="sidebar">
-        <nav class="sidebar-nav" id="sidebarMenu">
-          <!-- Dynamically rendered based on active role -->
-        </nav>
+        <nav class="sidebar-nav" id="sidebarMenu"></nav>
         <div class="sidebar-footer">
           <button class="logout-btn" onclick="handleLogout()">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
           </button>
         </div>
       </aside>
 
-      <!-- Main Content Workspace -->
-      <main class="content-workspace" id="workspace">
-        <!-- Sections will be rendered or toggled via JS -->
-      </main>
+      <!-- Main Dynamic Content Workspace -->
+      <main class="content-workspace" id="workspace"></main>
     </div>
   </div>
 
   <!-- ================= MODALS ================= -->
 
-  <!-- Apply Modal -->
+  <!-- 1. Apply for Job Modal -->
   <div class="modal" id="applyModal">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -132,7 +172,7 @@
         </div>
         <div class="form-group">
           <label>Cover Letter / Summary</label>
-          <textarea id="applicantCover" rows="4" placeholder="Highlight relevant skills & experience..."></textarea>
+          <textarea id="applicantCover" rows="4" placeholder="Highlight relevant skills & background..."></textarea>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeModal('applyModal')">Cancel</button>
@@ -142,7 +182,7 @@
     </div>
   </div>
 
-  <!-- Post Job Modal -->
+  <!-- 2. Post / Edit Job Modal (Recruiter) -->
   <div class="modal" id="postJobModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-header">
@@ -157,7 +197,7 @@
         </div>
         <div class="form-group">
           <label>Company Name</label>
-          <input type="text" id="companyInput" required placeholder="e.g. TechCorp Solutions" />
+          <input type="text" id="companyInput" required placeholder="e.g. Stripe Inc." />
         </div>
         <div class="form-group">
           <label>Location</label>
@@ -190,16 +230,16 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Salary Range</label>
-          <input type="text" id="salaryInput" placeholder="e.g. $120,000 - $145,000" required />
+          <label>Salary Range (Annual USD)</label>
+          <input type="text" id="salaryInput" placeholder="e.g. $120,000 - $150,000" required />
         </div>
         <div class="form-group">
-          <label>Required Skills</label>
-          <input type="text" id="skillsInput" placeholder="React, TypeScript, CSS" required />
+          <label>Required Skills (comma separated)</label>
+          <input type="text" id="skillsInput" placeholder="React, TypeScript, Node.js" required />
         </div>
         <div class="form-group full-width">
           <label>Job Description</label>
-          <textarea id="descriptionInput" rows="4" placeholder="Detail the day-to-day responsibilities..." required></textarea>
+          <textarea id="descriptionInput" rows="4" placeholder="Detail the day-to-day duties and requirements..." required></textarea>
         </div>
         <div class="modal-footer full-width">
           <button type="button" class="btn btn-outline" onclick="closeModal('postJobModal')">Cancel</button>
@@ -209,7 +249,7 @@
     </div>
   </div>
 
-  <!-- Schedule Modal -->
+  <!-- 3. Schedule Interview Modal -->
   <div class="modal" id="scheduleModal">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -227,25 +267,26 @@
           <input type="datetime-local" id="schedDateTime" required />
         </div>
         <div class="form-group">
-          <label>Mode</label>
+          <label>Interview Mode</label>
           <select id="schedMode">
-            <option value="Online">Online Call</option>
-            <option value="Offline">On-site</option>
+            <option value="Online">Online Video Call</option>
+            <option value="Offline">On-site In-Person</option>
+            <option value="Phone">Phone Screening</option>
           </select>
         </div>
         <div class="form-group">
           <label>Meeting Link / Location</label>
-          <input type="text" id="schedLink" placeholder="Link or Room Number" required />
+          <input type="text" id="schedLink" placeholder="https://meet.google.com/xyz or Room 402" required />
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeModal('scheduleModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Send Invitation</button>
+          <button type="submit" class="btn btn-primary">Confirm & Send Invite</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Job Details Modal -->
+  <!-- 4. Job Details Modal -->
   <div class="modal" id="jobDetailModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-header">
@@ -257,31 +298,48 @@
     </div>
   </div>
 
-  <!-- Report Modal -->
+  <!-- 5. Report Job Modal -->
   <div class="modal" id="reportModal">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3>Report Job</h3>
+        <h3>Report Job or Suspicious Content</h3>
         <button class="close-modal" onclick="closeModal('reportModal')">&times;</button>
       </div>
       <form id="reportForm" class="modal-body">
         <input type="hidden" id="reportTargetId" />
+        <input type="hidden" id="reportCompany" />
         <div class="form-group">
-          <label>Reason</label>
+          <label>Reason for Flag</label>
           <select id="reportReason">
-            <option value="Fraud">Fraud</option>
-            <option value="Spam">Spam</option>
+            <option value="Fake Job">Fake Job / Non-existent company</option>
+            <option value="Spam">Spam / Duplicate Posting</option>
+            <option value="Wrong Details">Wrong / Misleading Details</option>
+            <option value="Fraud / Payment Demand">Fraud / Demanding Application Fees</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Details</label>
-          <textarea id="reportDetails" rows="4" required></textarea>
+          <label>Explanation & Evidence</label>
+          <textarea id="reportDetails" rows="4" placeholder="Explain the violation in detail..." required></textarea>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeModal('reportModal')">Cancel</button>
-          <button type="submit" class="btn btn-danger">Submit Report</button>
+          <button type="submit" class="btn btn-danger">Submit Report to Admin</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 6. Admin Recruiter Details Modal -->
+  <div class="modal" id="recruiterDetailModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="recruiterModalTitle">Recruiter & Company Profile</h3>
+        <button class="close-modal" onclick="closeModal('recruiterDetailModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="recruiterModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('recruiterDetailModal')">Close</button>
+      </div>
     </div>
   </div>
 
